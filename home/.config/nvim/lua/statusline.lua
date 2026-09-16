@@ -29,7 +29,7 @@ end
 local function right()
   local encoding = vim.bo.fileencoding ~= "" and vim.bo.fileencoding or vim.o.encoding
   local format = vim.bo.fileformat ~= "" and vim.bo.fileformat or "unix"
-  return string.format("%s[%s] %d,%d %P", encoding, format, vim.fn.line("."), vim.fn.col("."))
+  return string.format("%s[%s] %d,%d", encoding, format, vim.fn.line("."), vim.fn.col("."))
 end
 
 function M.setup()
@@ -45,7 +45,7 @@ function M.setup()
         return
       end
       vim.opt.laststatus = 3
-      vim.wo[win].statusline = "%{%v:lua.require('statusline').left()%}%=%{%v:lua.require('statusline').right()%}"
+      vim.wo[win].statusline = "%{%v:lua.require('statusline').left()%}%=%{%v:lua.require('statusline').right()%} %P"
     end,
   })
 end
