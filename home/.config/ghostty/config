@@ -1,0 +1,28 @@
+# Optional macOS/Ghostty overlay. The default shell remains the user's shell.
+font-family = JetBrainsMono Nerd Font Mono
+font-size = 12
+shell-integration = zsh
+window-save-state = never
+background = #000000
+foreground = #ffffff
+cursor-color = #ffffff
+background-opacity = 0.90
+background-blur = true
+mouse-hide-while-typing = true
+
+palette = 0=#000000
+palette = 8=#808080
+palette = 1=#ff0000
+palette = 9=#ff3030
+palette = 2=#00ff00
+palette = 10=#30ff30
+palette = 3=#ffff00
+palette = 11=#ffff40
+palette = 4=#0000ff
+palette = 12=#4040ff
+palette = 5=#ff00ff
+palette = 13=#ff40ff
+palette = 6=#00ffff
+palette = 14=#40ffff
+palette = 7=#c0c0c0
+palette = 15=#ffffff
