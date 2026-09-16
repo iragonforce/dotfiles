@@ -44,7 +44,3 @@ __dotfiles_set_prompt() {
 
 PROMPT_COMMAND=__dotfiles_set_prompt
 __dotfiles_set_prompt
-
-if [ -r "$HOME/.local/bin/env" ]; then
-  . "$HOME/.local/bin/env"
-fi
