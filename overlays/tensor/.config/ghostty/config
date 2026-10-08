@@ -1,0 +1,33 @@
+font-family = JetBrainsMono Nerd Font Mono
+font-size = 12
+command = /bin/zsh
+shell-integration = zsh
+window-save-state = never
+background-opacity = 0.88
+background-opacity-cells = true
+background-blur = true
+mouse-hide-while-typing = true
+custom-shader = shaders/cursor_tail.glsl
+custom-shader = shaders/cursor_sweep.glsl
+background = #101418
+foreground = #ffffff
+selection-background = #ffffff
+selection-foreground = #000000
+cursor-color = #ffffff
+
+palette = 0=#101418
+palette = 8=#6b737c
+palette = 1=#ff6b6b
+palette = 9=#ff8888
+palette = 2=#7ad99a
+palette = 10=#98e7b2
+palette = 3=#f4ce73
+palette = 11=#ffe19a
+palette = 4=#75baff
+palette = 12=#9dccff
+palette = 5=#d9a0f5
+palette = 13=#e7baff
+palette = 6=#70d6d0
+palette = 14=#98e6e2
+palette = 7=#dce3e8
+palette = 15=#ffffff
