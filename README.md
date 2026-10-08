@@ -1,7 +1,9 @@
 # Portable dotfiles
 
-Portable shell, Vim, Neovim, and tmux configuration for macOS, Arch Linux,
-Ubuntu, WSL, and restricted machines.
+This `tensor` branch keeps Tensor's working zsh, Neovim, tmux, and Ghostty
+configuration in `home/`. It includes the colour and transparency settings
+adapted from Qubit. The `main` branch remains the portable configuration for
+macOS, Arch Linux, Ubuntu, WSL, and restricted machines.
 
 The installer never starts tmux automatically. It copies regular files and
 backs up existing files before replacing them.
@@ -37,6 +39,7 @@ Existing files are backed up under `~/.dotfiles-backup/`.
 - `platform/macos`: macOS and Homebrew overlay.
 - `platform/linux`: Arch, Ubuntu, and WSL overlay.
 - `platform/restricted`: configuration-only snapshot.
+- `tensor`: Tensor's machine configuration.
 
 ## Safety
 

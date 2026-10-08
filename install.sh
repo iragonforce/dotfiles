@@ -255,7 +255,7 @@ deploy_configs() {
   done
   copy_dir "$ROOT_DIR/home/.config/nvim" "$HOME/.config/nvim"
   copy_file "$ROOT_DIR/home/.config/dotfiles/profile.default" "$HOME/.config/dotfiles/profile"
-  if [ "$PLATFORM" = macos ] && [ -d "$ROOT_DIR/home/.config/ghostty" ]; then
+  if [ -d "$ROOT_DIR/home/.config/ghostty" ]; then
     copy_dir "$ROOT_DIR/home/.config/ghostty" "$HOME/.config/ghostty"
   fi
   if [ "$INSTALL_ROOT" -eq 1 ]; then

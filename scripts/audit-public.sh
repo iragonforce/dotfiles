@@ -35,8 +35,8 @@ while IFS= read -r path; do
   fi
 done < <(find "$ROOT_DIR" -type f -not -path "$ROOT_DIR/.git/*" -not -path "$ROOT_DIR/.DS_Store" -print)
 
-if grep -RInE --exclude=audit-public.sh 'tmux-auto-start|ghostty-tmux|tmux-ssh|openclaw|sunshine' "$ROOT_DIR/home" "$ROOT_DIR/scripts" "$ROOT_DIR/install.sh" >/dev/null 2>&1; then
-  fail "retired auto-start or service helper reference found"
+if grep -RInE --exclude=audit-public.sh 'tmux-auto-start|ghostty-tmux|tmux-ssh|openclaw|sunshine' "$ROOT_DIR/scripts" "$ROOT_DIR/install.sh" >/dev/null 2>&1; then
+  fail "retired service helper reference found in shared scripts"
 fi
 
 if [ "$failures" -gt 0 ]; then

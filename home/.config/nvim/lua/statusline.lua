@@ -1,61 +1,109 @@
 local M = {}
 
-local modes = {
-  n = "NORMAL", no = "NORMAL", i = "INSERT", ic = "INSERT", ix = "INSERT",
-  v = "VISUAL", vs = "VISUAL", V = "VISUAL", R = "REPLACE", Rc = "REPLACE",
-  c = "COMMAND", t = "TERMINAL",
+local mode_names = {
+  n = "NORMAL",
+  no = "NORMAL",
+  nov = "NORMAL",
+  noV = "NORMAL",
+  ["no\22"] = "NORMAL",
+  i = "INSERT",
+  ic = "INSERT",
+  ix = "INSERT",
+  v = "VISUAL",
+  vs = "VISUAL",
+  V = "VISUAL",
+  Vs = "VISUAL",
+  ["\22"] = "VISUAL",
+  ["\22s"] = "VISUAL",
+  R = "REPLACE",
+  Rc = "REPLACE",
+  Rv = "V-REPLACE",
+  c = "COMMAND",
+  cv = "EX",
+  ce = "EX",
+  r = "PROMPT",
+  rm = "MORE",
+  t = "TERMINAL",
 }
 
-local function mode()
-  return modes[vim.fn.mode()] or "NORMAL"
+local function current_mode()
+  return mode_names[vim.fn.mode()] or "NORMAL"
 end
 
-local function path()
+local function current_path()
   local name = vim.api.nvim_buf_get_name(0)
-  return name == "" and "[No Name]" or vim.fn.fnamemodify(name, ":~")
+  if name == "" then
+    return "[No Name]"
+  end
+  return vim.fn.fnamemodify(name, ":~")
 end
 
 local function git_info()
   local name = vim.api.nvim_buf_get_name(0)
-  if name == "" then return "" end
-  local dir = vim.fn.fnamemodify(name, ":p:h")
-  local root = vim.fn.systemlist({ "git", "-C", dir, "rev-parse", "--show-toplevel" })
-  if vim.v.shell_error ~= 0 or not root[1] or root[1] == "" then return "" end
-  local branch = vim.fn.systemlist({ "git", "-C", dir, "branch", "--show-current" })[1] or ""
-  if branch == "" then branch = vim.fn.systemlist({ "git", "-C", dir, "rev-parse", "--short", "HEAD" })[1] or "HEAD" end
-  return string.format(" 󰊢 %s:%s", vim.fn.fnamemodify(root[1], ":t"), branch)
+  if name == "" then
+    return ""
+  end
+  local directory = vim.fn.fnamemodify(name, ":p:h")
+  local root = vim.fn.systemlist({ "git", "-C", directory, "rev-parse", "--show-toplevel" })
+  if vim.v.shell_error ~= 0 or not root or not root[1] or root[1] == "" then
+    return ""
+  end
+  local branch = vim.fn.systemlist({ "git", "-C", directory, "branch", "--show-current" })
+  branch = branch and branch[1] or ""
+  if branch == "" then
+    branch = vim.fn.systemlist({ "git", "-C", directory, "rev-parse", "--short", "HEAD" })[1] or "HEAD"
+  end
+  local repo = vim.fn.fnamemodify(root[1], ":t")
+  return string.format(" 󰊢 %s:%s", repo, branch)
 end
 
-local function right()
-  local encoding = vim.bo.fileencoding ~= "" and vim.bo.fileencoding or vim.o.encoding
-  local format = vim.bo.fileformat ~= "" and vim.bo.fileformat or "unix"
-  return string.format("%s[%s] %d,%d", encoding, format, vim.fn.line("."), vim.fn.col("."))
+local function encoding()
+  local value = vim.bo.fileencoding
+  if value == "" then
+    value = vim.o.encoding
+  end
+  return value == "" and "utf-8" or value
 end
 
-function M.setup()
-  local group = vim.api.nvim_create_augroup("PortableDotfilesStatusline", { clear = true })
-  vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "FileType" }, {
-    group = group,
-    callback = function(args)
-      local win = vim.fn.bufwinid(args.buf)
-      if win == -1 then return end
-      if vim.bo[args.buf].filetype == "customdashboard" then
-        vim.wo[win].statusline = ""
-        vim.opt.laststatus = 0
-        return
-      end
-      vim.opt.laststatus = 3
-      vim.wo[win].statusline = "%{%v:lua.require('statusline').left()%}%=%{%v:lua.require('statusline').right()%} %P"
-    end,
-  })
+local function fileformat()
+  return vim.bo.fileformat == "" and "unix" or vim.bo.fileformat
 end
 
 function M.left()
-  return "%#StatusLineMode#[" .. mode() .. "]%#StatusLine# " .. path() .. git_info()
+  return "%#StatusLineMode#[" .. current_mode() .. "]%#StatusLine# " .. current_path() .. git_info()
 end
 
 function M.right()
-  return right()
+  local line = math.max(vim.fn.line("."), 1)
+  local col = math.max(vim.fn.col("."), 1)
+  return string.format("%s[%s] %d,%d", encoding(), fileformat(), line, col)
+end
+
+local function apply_window_statusline(win)
+  if not vim.api.nvim_win_is_valid(win) then
+    return
+  end
+
+  local buf = vim.api.nvim_win_get_buf(win)
+  if vim.bo[buf].filetype == "customdashboard" then
+    vim.opt.laststatus = 0
+    return
+  end
+
+  vim.opt.laststatus = 3
+  vim.wo[win].statusline = "%{%v:lua.require('statusline').left()%}%=%{%v:lua.require('statusline').right()%} %P"
+end
+
+function M.setup()
+  apply_window_statusline(0)
+
+  local group = vim.api.nvim_create_augroup("PersonalStatusline", { clear = true })
+  vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", "FileType" }, {
+    group = group,
+    callback = function(args)
+      apply_window_statusline(vim.fn.bufwinid(args.buf))
+    end,
+  })
 end
 
 return M
