@@ -21,6 +21,12 @@ while IFS= read -r path; do
   size=$(wc -c < "$path" | tr -d ' ')
   [ "$size" -le 1048576 ] || fail "file is larger than 1 MiB: $rel"
   case "$rel" in
+    home/.config/nvim/plugin/*.lua|home/.config/nvim/after/plugin/*.lua)
+      case "$(dirname "$rel")" in
+        home/.config/nvim/plugin|home/.config/nvim/after/plugin) ;;
+        *) fail "generated plugin tree must not be committed: $rel" ;;
+      esac
+      ;;
     */plugin/*|*/pack/*|*/lazy/*|*/plugged/*|*/.cache/*|*/.local/share/*)
       fail "generated/plugin tree must not be committed: $rel"
       ;;
